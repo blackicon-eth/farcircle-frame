@@ -9,18 +9,36 @@ import {
   getPreviousFrame,
   useFramesReducer,
 } from "frames.js/next/server";
+import axios from "axios";
 
-export function getCircleFrameBody(previousFrame: any) {
-  // TODO: call api to retrive user's info
+export async function getCircleFrameBody(previousFrame: any, frameCallerHandle: string) {
+  var people: string[] = [];
+  try {
+    const response = await axios.post("https://graph.cast.k3l.io/links/engagement/handles?limit=9", [frameCallerHandle]);
+    response.data.result.forEach((element: any) => {
+      if (element.fname !== frameCallerHandle || people.length > 8) {
+        people.push(element.fname);
+      }
+    });
+  } catch (error) {
+    console.error(error);
+  }
 
   return (
-    <FrameContainer postUrl="/" pathname="/" state={{}} previousFrame={previousFrame}>
+    <FrameContainer postUrl="/mint" pathname="/" state={{}} previousFrame={previousFrame}>
       <FrameImage aspectRatio="1:1">
         <div tw="w-full h-full bg-slate-700 text-white justify-center items-center flex flex-col">
-          <div tw="flex flex-row">Mint</div>
+          <div tw="flex flex-row">MINT</div>
+          <div tw="flex flex-col">
+            {people.map((person: string, index: number) => (
+              <div tw="flex" key={index}>
+                {person}
+              </div>
+            ))}
+          </div>
         </div>
       </FrameImage>
-      <FrameButton action="tx" target="/mint">
+      <FrameButton action="tx" target="/mint" post_url="/">
         Mint
       </FrameButton>
     </FrameContainer>
