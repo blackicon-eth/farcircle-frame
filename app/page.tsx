@@ -8,7 +8,7 @@ import {
   getPreviousFrame,
 } from "frames.js/next/server";
 import { DEFAULT_DEBUGGER_HUB_URL, createDebugUrl } from "./debug";
-import { getCircleFrameBody, getDefaultFrameBody } from "../lib/getFrame";
+import { getCircleFrameBody, getDefaultFrameBody, getTransactionSubmittedFrameBody } from "../lib/getFrame";
 
 // This is a react server component only
 export default async function Home({ searchParams }: NextServerPageProps) {
@@ -22,7 +22,9 @@ export default async function Home({ searchParams }: NextServerPageProps) {
     throw new Error("Invalid frame payload");
   }
 
-  if (frameMessage?.buttonIndex === 1) {
+  if (frameMessage?.transactionId) {
+    return getTransactionSubmittedFrameBody(previousFrame, frameMessage.transactionId);
+  } else if (frameMessage?.buttonIndex === 1) {
     return getCircleFrameBody(previousFrame);
   } else {
     return getDefaultFrameBody(previousFrame);
