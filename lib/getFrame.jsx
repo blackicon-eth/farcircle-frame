@@ -15,7 +15,7 @@ import fs from "fs";
 import * as style from "./styles/styles";
 import { init, fetchQuery } from "@airstack/node";
 
-init(process.env.AIRSTACK_KEY!);
+init(process.env.AIRSTACK_KEY);
 
 const query = `query GetPropicsQuery($fname: String) {
   Socials(
@@ -38,13 +38,13 @@ const query = `query GetPropicsQuery($fname: String) {
   }
 }`;
 
-export async function getCircleFrameBody(previousFrame: any, frameCallerUsername: string, frameCallerProfileImage: string) {
-  var peopleFnames: string[] = [];
-  var peoplePropics: string[] = [];
+export async function getCircleFrameBody(previousFrame, frameCallerUsername, frameCallerProfileImage) {
+  var peopleFnames = [];
+  var peoplePropics = [];
 
   try {
     const response = await axios.post("https://graph.cast.k3l.io/links/engagement/handles?limit=9", [frameCallerUsername]);
-    response.data.result.forEach((element: any) => {
+    response.data.result.forEach((element) => {
       if (element.username !== frameCallerUsername || peopleFnames.length > 8) {
         peopleFnames.push(element.fname);
       }
@@ -98,7 +98,7 @@ export async function getCircleFrameBody(previousFrame: any, frameCallerUsername
   );
 }
 
-export function getDefaultFrameBody(previousFrame: any) {
+export function getDefaultFrameBody(previousFrame) {
   const imagePath = path.join(process.cwd(), "public/front_image.png");
   const buffer = fs.readFileSync(imagePath);
   const arrayBuffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
@@ -120,7 +120,7 @@ export function getDefaultFrameBody(previousFrame: any) {
   );
 }
 
-export function getTransactionSubmittedFrameBody(previousFrame: any, transactionId: string) {
+export function getTransactionSubmittedFrameBody(previousFrame, transactionId) {
   return (
     <FrameContainer pathname="/" postUrl="/" state={{}} previousFrame={previousFrame}>
       <FrameImage aspectRatio="1:1">
