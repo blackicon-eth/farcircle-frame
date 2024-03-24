@@ -12,7 +12,7 @@ import {
 import axios from "axios";
 import path from "path";
 import fs from "fs";
-import * as style from "./styles/styles.ts";
+import * as style from "./styles/styles";
 
 export async function getCircleFrameBody(previousFrame: any, frameCallerUsername: string) {
   var people: string[] = [];
