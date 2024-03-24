@@ -1,4 +1,4 @@
 export const image = {
-  width: "420px",
-  height: "420px",
+  width: "1000px",
+  height: "1000px",
 };

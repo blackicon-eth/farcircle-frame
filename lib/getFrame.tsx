@@ -59,8 +59,8 @@ export function getDefaultFrameBody(previousFrame: any) {
       <FrameImage
         aspectRatio="1:1"
         options={{
-          width: 420,
-          height: 420,
+          width: 1000,
+          height: 1000,
           fonts: [],
         }}
       >
