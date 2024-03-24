@@ -10,14 +10,18 @@ import {
   useFramesReducer,
 } from "frames.js/next/server";
 import axios from "axios";
+import path from "path";
+import fs from "fs";
+import * as style from "./styles/styles.ts";
 
-export async function getCircleFrameBody(previousFrame: any, frameCallerHandle: string) {
+export async function getCircleFrameBody(previousFrame: any, frameCallerUsername: string) {
   var people: string[] = [];
   try {
-    const response = await axios.post("https://graph.cast.k3l.io/links/engagement/handles?limit=9", [frameCallerHandle]);
+    const response = await axios.post("https://graph.cast.k3l.io/links/engagement/handles?limit=9", [frameCallerUsername]);
     response.data.result.forEach((element: any) => {
-      if (element.fname !== frameCallerHandle || people.length > 8) {
-        people.push(element.fname);
+      console.log(element);
+      if (element.username !== frameCallerUsername || people.length > 8) {
+        people.push(element.username);
       }
     });
   } catch (error) {
@@ -46,14 +50,23 @@ export async function getCircleFrameBody(previousFrame: any, frameCallerHandle: 
 }
 
 export function getDefaultFrameBody(previousFrame: any) {
+  const imagePath = path.join(process.cwd(), "public/front_image.png");
+  const buffer = fs.readFileSync(imagePath);
+  const arrayBuffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+
   return (
     <FrameContainer postUrl="/frame" pathname="/" state={{}} previousFrame={previousFrame}>
-      <FrameImage aspectRatio="1:1">
-        <div tw="w-full h-full bg-slate-700 text-white justify-center items-center flex flex-col">
-          <div tw="flex flex-row">Calculate Circle</div>
-        </div>
+      <FrameImage
+        aspectRatio="1:1"
+        options={{
+          width: 420,
+          height: 420,
+          fonts: [],
+        }}
+      >
+        <img src={`data:image/png;base64,${Buffer.from(arrayBuffer).toString("base64")}`} style={style.image} />
       </FrameImage>
-      <FrameButton>Calculate Circle</FrameButton>
+      <FrameButton>Calculate your Circle!</FrameButton>
     </FrameContainer>
   );
 }

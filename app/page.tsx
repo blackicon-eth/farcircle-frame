@@ -14,12 +14,14 @@ export default async function Home({ searchParams }: NextServerPageProps) {
     throw new Error("Invalid frame payload");
   }
 
-  const username = frameMessage?.requesterUserData?.username!;
+  const frameCallerUsername = frameMessage?.requesterUserData?.username!;
+
+  console.log("Username", frameCallerUsername);
 
   if (frameMessage?.transactionId) {
     return getTransactionSubmittedFrameBody(previousFrame, frameMessage.transactionId);
   } else if (frameMessage?.buttonIndex === 1) {
-    return getCircleFrameBody(previousFrame, username);
+    return getCircleFrameBody(previousFrame, frameCallerUsername);
   } else {
     return getDefaultFrameBody(previousFrame);
   }
