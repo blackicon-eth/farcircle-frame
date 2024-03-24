@@ -8,6 +8,11 @@ export const bgImage = {
   height: "420px",
 };
 
+export const transactionSubmittedImage = {
+  width: "420px",
+  height: "420px",
+};
+
 export const callerPropic = {
   width: "120px",
   height: "120px",

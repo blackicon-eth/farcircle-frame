@@ -1,14 +1,4 @@
-import {
-  FrameButton,
-  FrameContainer,
-  FrameImage,
-  FrameInput,
-  FrameReducer,
-  NextServerPageProps,
-  getFrameMessage,
-  getPreviousFrame,
-  useFramesReducer,
-} from "frames.js/next/server";
+import { FrameButton, FrameContainer, FrameImage } from "frames.js/next/server";
 import axios from "axios";
 import path from "path";
 import fs from "fs";
@@ -57,21 +47,21 @@ export async function getCircleFrameBody(previousFrame, frameCallerUsername, fra
     const name = peopleFnames[i];
     const { data, error } = await fetchQuery(query, { fname: name });
     if (data) {
-      console.log("Data:", JSON.stringify(data));
+      //console.log("Data:", JSON.stringify(data));
       peoplePropics.push(data.Socials.Social[0].profileImageContentValue.image.small);
     } else if (error) {
       console.log("error:", error);
     }
   }
 
-  console.log(peoplePropics);
+  //console.log(peoplePropics);
 
   const imagePath = path.join(process.cwd(), "public/bg_image.png");
   const buffer = fs.readFileSync(imagePath);
   const arrayBuffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
 
   return (
-    <FrameContainer postUrl="/mint" pathname="/" state={{}} previousFrame={previousFrame}>
+    <FrameContainer postUrl="/frame" pathname="/" state={{}} previousFrame={previousFrame}>
       <FrameImage
         aspectRatio="1:1"
         options={{
@@ -94,6 +84,7 @@ export async function getCircleFrameBody(previousFrame, frameCallerUsername, fra
       <FrameButton action="tx" target="/mint" post_url="/">
         Mint
       </FrameButton>
+      <FrameButton action="post">Mock Mint</FrameButton>
     </FrameContainer>
   );
 }
@@ -121,14 +112,26 @@ export function getDefaultFrameBody(previousFrame) {
 }
 
 export function getTransactionSubmittedFrameBody(previousFrame, transactionId) {
+  const imagePath = path.join(process.cwd(), "public/transaction_submitted.png");
+  const buffer = fs.readFileSync(imagePath);
+  const arrayBuffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+
   return (
     <FrameContainer pathname="/" postUrl="/" state={{}} previousFrame={previousFrame}>
-      <FrameImage aspectRatio="1:1">
-        <div tw="bg-purple-800 text-white w-full h-full justify-center items-center flex">
-          Transaction submitted! {transactionId}
-        </div>
+      <FrameImage
+        aspectRatio="1:1"
+        options={{
+          width: 420,
+          height: 420,
+          fonts: [],
+        }}
+      >
+        <img
+          src={`data:image/png;base64,${Buffer.from(arrayBuffer).toString("base64")}`}
+          style={style.transactionSubmittedImage}
+        />
       </FrameImage>
-      <FrameButton action="link" target={`https://optimistic.etherscan.io/tx/${transactionId}`}>
+      <FrameButton action="link" target={`https://basescan.org/tx/${transactionId}`}>
         View on block explorer
       </FrameButton>
     </FrameContainer>

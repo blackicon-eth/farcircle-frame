@@ -3,7 +3,7 @@ import { TransactionTargetResponse } from "frames.js";
 import { getFrameMessage } from "frames.js/next/server";
 import { NextRequest, NextResponse } from "next/server";
 import { Abi, createPublicClient, encodeFunctionData, getContract, http } from "viem";
-import { optimism } from "viem/chains";
+import { optimism, base } from "viem/chains";
 import { storageRegistryABI } from "./contract/storage-registry";
 
 export async function POST(req: NextRequest): Promise<NextResponse<TransactionTargetResponse>> {
