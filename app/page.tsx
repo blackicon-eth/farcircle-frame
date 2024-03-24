@@ -15,13 +15,12 @@ export default async function Home({ searchParams }: NextServerPageProps) {
   }
 
   const frameCallerUsername = frameMessage?.requesterUserData?.username!;
-
-  console.log("Username", frameCallerUsername);
+  const frameCallerProfileImage = frameMessage?.requesterUserData?.profileImage!;
 
   if (frameMessage?.transactionId) {
     return getTransactionSubmittedFrameBody(previousFrame, frameMessage.transactionId);
   } else if (frameMessage?.buttonIndex === 1) {
-    return getCircleFrameBody(previousFrame, frameCallerUsername);
+    return getCircleFrameBody(previousFrame, frameCallerUsername, frameCallerProfileImage);
   } else {
     return getDefaultFrameBody(previousFrame);
   }
