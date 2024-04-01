@@ -26,6 +26,14 @@
     "target": "ES2022",
     "allowJs": true
   },
-  "include": ["next-env.d.ts", "next.config.js", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "next.config.js",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "lib/getCircleImage.ts",
+    "lib/getFrame.jsx"
+  ],
   "exclude": ["node_modules"]
 }

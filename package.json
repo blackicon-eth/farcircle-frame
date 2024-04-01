@@ -19,6 +19,7 @@
     "@vercel/kv": "^1.0.1",
     "@xmtp/frames-validator": "^0.5.0",
     "axios": "^1.6.8",
+    "canvas": "^2.11.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "frames.js": "^0.9.3",

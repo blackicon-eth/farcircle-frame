@@ -1,9 +1,10 @@
 import { FrameButton, FrameContainer, FrameImage } from "frames.js/next/server";
 import axios from "axios";
 import path from "path";
-import fs from "fs";
+import fs, { cp } from "fs";
 import * as style from "./styles/styles";
 import { init, fetchQuery } from "@airstack/node";
+import getCircleImage from "./getCircleImage";
 
 init(process.env.AIRSTACK_KEY);
 
@@ -29,57 +30,40 @@ const query = `query GetPropicsQuery($fname: String) {
 }`;
 
 export async function getCircleFrameBody(previousFrame, frameCallerUsername, frameCallerProfileImage) {
-  var peopleFnames = [];
   var peoplePropics = [];
 
   try {
-    const response = await axios.post("https://graph.cast.k3l.io/links/engagement/handles?limit=9", [frameCallerUsername]);
-    response.data.result.forEach((element) => {
-      if (element.username !== frameCallerUsername || peopleFnames.length > 8) {
-        peopleFnames.push(element.fname);
+    const response = await axios.post("https://graph.cast.k3l.io/links/engagement/handles?limit=65", [frameCallerUsername]);
+    const promises = response.data.result.map(async (element) => {
+      if (element.fname !== frameCallerUsername && peoplePropics.length <= 50) {
+        const name = element.fname;
+        const { data, error } = await fetchQuery(query, { fname: name });
+        if (data.Socials.Social) {
+          peoplePropics.push(data.Socials.Social[0].profileImageContentValue.image.small);
+        } else if (error) {
+          console.log("error:", error);
+        }
       }
     });
+
+    await Promise.all(promises);
   } catch (error) {
     console.error(error);
   }
 
-  for (let i = 0; i < peopleFnames.length; i++) {
-    const name = peopleFnames[i];
-    const { data, error } = await fetchQuery(query, { fname: name });
-    if (data) {
-      //console.log("Data:", JSON.stringify(data));
-      peoplePropics.push(data.Socials.Social[0].profileImageContentValue.image.small);
-    } else if (error) {
-      console.log("error:", error);
-    }
-  }
-
-  //console.log(peoplePropics);
-
-  const imagePath = path.join(process.cwd(), "public/bg_image.png");
-  const buffer = fs.readFileSync(imagePath);
-  const arrayBuffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+  const arrayBuffer = await getCircleImage(peoplePropics, frameCallerProfileImage, frameCallerUsername);
 
   return (
     <FrameContainer postUrl="/frame" pathname="/" state={{}} previousFrame={previousFrame}>
       <FrameImage
         aspectRatio="1:1"
         options={{
-          width: 420,
-          height: 420,
+          width: 350,
+          height: 350,
           fonts: [],
         }}
       >
         <img src={`data:image/png;base64,${Buffer.from(arrayBuffer).toString("base64")}`} style={style.bgImage} />
-        <img src={frameCallerProfileImage} style={style.callerPropic} />
-        <img src={peoplePropics[0]} style={style.friendPropicTop} />
-        <img src={peoplePropics[1]} style={style.friendPropicTopLeft} />
-        <img src={peoplePropics[2]} style={style.friendPropicTopRight} />
-        <img src={peoplePropics[3]} style={style.friendPropicLeft} />
-        <img src={peoplePropics[4]} style={style.friendPropicRight} />
-        <img src={peoplePropics[5]} style={style.friendPropicBottom} />
-        <img src={peoplePropics[6]} style={style.friendPropicBottomLeft} />
-        <img src={peoplePropics[7]} style={style.friendPropicBottomRight} />
       </FrameImage>
       <FrameButton action="tx" target="/mint" post_url="/">
         Mint
@@ -99,8 +83,8 @@ export function getDefaultFrameBody(previousFrame) {
       <FrameImage
         aspectRatio="1:1"
         options={{
-          width: 420,
-          height: 420,
+          width: 350,
+          height: 350,
           fonts: [],
         }}
       >
@@ -121,8 +105,8 @@ export function getTransactionSubmittedFrameBody(previousFrame, transactionId) {
       <FrameImage
         aspectRatio="1:1"
         options={{
-          width: 420,
-          height: 420,
+          width: 350,
+          height: 350,
           fonts: [],
         }}
       >

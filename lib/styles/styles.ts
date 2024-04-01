@@ -1,16 +1,16 @@
 export const frontImage = {
-  width: "420px",
-  height: "420px",
+  width: "350px",
+  height: "350px",
 };
 
 export const bgImage = {
-  width: "420px",
-  height: "420px",
+  width: "350px",
+  height: "350px",
 };
 
 export const transactionSubmittedImage = {
-  width: "420px",
-  height: "420px",
+  width: "350px",
+  height: "350px",
 };
 
 export const callerPropic = {
